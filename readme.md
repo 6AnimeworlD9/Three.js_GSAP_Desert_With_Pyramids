@@ -1,3 +1,6 @@
+WebStorm
+Для запуска необходимо установить модули Three.js(ниже прилагается инструкция) и gsap(можно прописать в терминале 'npm install gsap' ).
+
 # Three.js Journey
 
 ## Setup
