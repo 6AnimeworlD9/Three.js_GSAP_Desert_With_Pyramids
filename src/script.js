@@ -217,7 +217,9 @@ fontLoader.load('/fonts/helvetiker_regular.typeface.json', (font) => {
     gui.add(f,'pause').name('3d Text Animation Pause')
 })
 
-// Floor
+/**
+  Floor
+ */
 const floor = new THREE.Mesh(
     new THREE.PlaneGeometry(100, 100,10,10),
     new THREE.MeshStandardMaterial({
@@ -251,12 +253,12 @@ scene.add(sphere3)
 /**
  * Lights, Shadows
  */
-// Ambient light
+// First light
 const ambientLight = new THREE.AmbientLight('#b9d5ff', 0.8)
 gui.add(ambientLight, 'intensity').min(0).max(1).step(0.001)
 scene.add(ambientLight)
 
-// Directional light
+// Second light
 const moonLight = new THREE.DirectionalLight('#b9d5ff', 0.8)
 moonLight.position.set(4, 5, -2)
 gui.add(moonLight, 'intensity').min(0).max(1).step(0.001)
@@ -276,8 +278,9 @@ sphere3.castShadow = true
 pyramid1.castShadow = true
 pyramid2.castShadow = true
 pyramid3.castShadow = true
-cylinder1.castShadow=true
-cylinder2.castShadow=true
+cylinder1.castShadow = true
+cylinder2.castShadow = true
+cubeStone.castShadow = true
 
 /**
  * Sizes
@@ -288,15 +291,13 @@ const sizes = {
 }
 
 window.addEventListener('resize', () => {
-    // Update sizes
+
     sizes.width = window.innerWidth
     sizes.height = window.innerHeight
 
-    // Update camera
     camera.aspect = sizes.width / sizes.height
     camera.updateProjectionMatrix()
 
-    // Update renderer
     renderer.setSize(sizes.width, sizes.height)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 })
@@ -304,14 +305,12 @@ window.addEventListener('resize', () => {
 /**
  * Camera
  */
-// Base camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
 camera.position.x = 4
 camera.position.y = 2
 camera.position.z = 5
 scene.add(camera)
 
-// Controls
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
 
@@ -327,7 +326,9 @@ renderer.setClearColor('#262837')
 renderer.shadowMap.enabled = true
 renderer.shadowMap.type = THREE.PCFSoftShadowMap
 
-//Fullscreen and Resize
+/**
+Fullscreen and Events
+ */
 
 window.addEventListener('dblclick', ()=>{
 
@@ -363,16 +364,13 @@ window.addEventListener('offline', ()=> {
  * Animate
  */
 const clock = new THREE.Clock()
-
 const tick = () => {
     const elapsedTime = clock.getElapsedTime()
 
-    // Spheres
     const sphere1Angle = elapsedTime * 0.5
     sphere1.position.x = Math.cos(sphere1Angle) * 4
     sphere1.position.z = Math.sin(sphere1Angle) * 4
     sphere1.position.y +=0.01
-
 
     const sphere2Angle = elapsedTime * 0.32
     sphere2.position.x = Math.cos(sphere2Angle) * 5
@@ -384,13 +382,8 @@ const tick = () => {
     sphere3.position.z = Math.sin(sphere3Angle) * (7 + Math.sin(elapsedTime * 0.5));
     sphere3.position.y +=0.01
 
-    // Update controls
     controls.update()
-
-    // Render
     renderer.render(scene, camera)
-
-    // Call tick again on the next frame
     window.requestAnimationFrame(tick)
 }
 
