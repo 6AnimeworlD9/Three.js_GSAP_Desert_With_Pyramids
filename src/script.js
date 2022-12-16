@@ -3,14 +3,14 @@ import * as THREE from 'three'
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'lil-gui'
 import {FontLoader} from "three/examples/jsm/loaders/FontLoader"
-import { TextGeometry} from "three/examples/jsm/geometries/TextGeometry"
+import {TextGeometry} from "three/examples/jsm/geometries/TextGeometry"
 import gsap from 'gsap'
 
 
 const gui = new dat.GUI()
 const canvas = document.querySelector('canvas.webgl')
 
-// Scene + CubeMap
+/** Scene + CubeMap */
 const scene = new THREE.Scene()
 scene.background = new THREE.CubeTextureLoader()
     .setPath( 'textures/cubeMaps/' )
@@ -39,6 +39,8 @@ const bricks1ColorTexture = textureLoader.load('/textures/bricks1/color.jpg')
 const bricks1AmbientOcclusionTexture = textureLoader.load('/textures/bricks1/ambientOcclusion.jpg')
 const bricks1NormalTexture = textureLoader.load('/textures/bricks1/normal.jpg')
 const bricks1RoughnessTexture = textureLoader.load('/textures/bricks1/roughness.jpg')
+
+const bricks2ColorTexture = textureLoader.load('/textures/bricks2/color.jpg')
 
 const grassColorTexture = textureLoader.load('/textures/grass/color.jpg')
 const grassAmbientOcclusionTexture = textureLoader.load('/textures/grass/ambientOcclusion.jpg')
@@ -98,6 +100,54 @@ pyramids.add(pyramid1)
 pyramids.add(pyramid2)
 pyramids.add(pyramid3)
 
+/**
+ * Doors for Pyramids
+ */
+const door1 = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.2, 0.2),
+    new THREE.MeshBasicMaterial( { color: 'black'} )
+)
+door1.position.x=0.87
+door1.position.z=0.93
+door1.position.y=0
+door1.rotation.y=40
+door1.rotation.z=15
+
+const door2 = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.2, 0.2),
+    new THREE.MeshBasicMaterial( { color: 'black'} )
+)
+door2.position.x=-9.8
+door2.position.z=-4.9
+door2.position.y=0
+door2.rotation.y=32
+door2.rotation.z=20
+
+const door3 = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.2, 0.2),
+    new THREE.MeshBasicMaterial( { color: 'black'} )
+)
+door3.position.x=3.65
+door3.position.z=-3.5
+door3.position.y=0.06
+door3.rotation.y=32
+door3.rotation.z=20
+
+scene.add(door1)
+scene.add(door2)
+scene.add(door3)
+
+/**
+ * Egyptian CubeStone
+ */
+const cubeStone = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.5, 0.5),
+    new THREE.MeshStandardMaterial({
+        map: bricks2ColorTexture,
+    })
+)
+cubeStone.position.x=-3
+cubeStone.position.z=6
+cubeStone.position.y=0.1
+cubeStone.rotation.x=-2
+cubeStone.rotation.z=-1
+scene.add(cubeStone)
 /**
  * Egyptian Cylinder
  */
@@ -179,18 +229,21 @@ const floor = new THREE.Mesh(
 )
 floor.rotation.x = -Math.PI * 0.5
 floor.position.y = 0
-//floor.geometry.vertices.map(v => { v.z= 0.5 * Math.sin(v.x*3)})
-
 floor.receiveShadow = true
 scene.add(floor)
 /**
  * Sphere's
  */
-const geometry = new THREE.SphereGeometry( 0.1, 32, 16 );
-const material = new THREE.MeshBasicMaterial( { color: 'black'} );
-const sphere1 = new THREE.Mesh( geometry, material );
-const sphere2 = new THREE.Mesh( geometry, material );
-const sphere3 = new THREE.Mesh( geometry, material );
+const geometry = new THREE.SphereGeometry( 0.1, 32, 16 )
+const material = new THREE.MeshStandardMaterial({
+    map: bricks1ColorTexture,
+    aoMap: bricks1AmbientOcclusionTexture,
+    normalMap: bricks1NormalTexture,
+    roughnessMap: bricksRoughnessTexture
+})
+const sphere1 = new THREE.Mesh( geometry, material )
+const sphere2 = new THREE.Mesh( geometry, material )
+const sphere3 = new THREE.Mesh( geometry, material )
 scene.add(sphere1)
 scene.add(sphere2)
 scene.add(sphere3)
@@ -318,18 +371,18 @@ const tick = () => {
     const sphere1Angle = elapsedTime * 0.5
     sphere1.position.x = Math.cos(sphere1Angle) * 4
     sphere1.position.z = Math.sin(sphere1Angle) * 4
-    sphere1.position.y = Math.sin(elapsedTime * 3)
+    sphere1.position.y +=0.01
 
 
     const sphere2Angle = elapsedTime * 0.32
     sphere2.position.x = Math.cos(sphere2Angle) * 5
     sphere2.position.z = Math.sin(sphere2Angle) * 5
-    sphere2.position.y = Math.sin(elapsedTime * 4) + Math.sin(elapsedTime * 2.5)
+    sphere2.position.y +=0.01
 
     const sphere3Angle = elapsedTime * 0.18
     sphere3.position.x = Math.cos(sphere3Angle) * (7 + Math.sin(elapsedTime * 0.32));
     sphere3.position.z = Math.sin(sphere3Angle) * (7 + Math.sin(elapsedTime * 0.5));
-    sphere3.position.y = Math.sin(elapsedTime * 4) + Math.sin(elapsedTime * 2.5)
+    sphere3.position.y +=0.01
 
     // Update controls
     controls.update()
